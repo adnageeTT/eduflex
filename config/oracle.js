@@ -3,8 +3,10 @@ const { initOracleClient, getConnection } = pkg;
 // import { initOracleClient, getConnection } from 'oracledb';
 import 'dotenv/config';
 
+const wallet_path = process.env.WALLET_PATH || '/opt/render/project/src/wallet';
 
-initOracleClient({ libDir: process.env.ORACLE_CLIENT_PATH });
+console.log(`Wallet path is ${wallet_path}`);
+initOracleClient({ configDir: wallet_path });
 
 async function insertUser(user) {
   const connection = await getConnection({

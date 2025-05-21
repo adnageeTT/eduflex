@@ -1,20 +1,24 @@
-import pkg from 'oracledb';
-const { initOracleClient, getConnection } = pkg;
-// import { initOracleClient, getConnection } from 'oracledb';
-import 'dotenv/config';
+import oracledb from 'oracledb';
+import fs from 'fs';
+import path from 'path';
+import dotenv from 'dotenv';
+dotenv.config();
 
-const wallet_path = process.env.WALLET_PATH || '/opt/render/project/src/wallet';
+// Enable Thin mode (Render doesn’t support thick mode)
+console.log(`Is it thin?:  ${oracledb.thin}`);
 
-console.log(`Wallet path is ${wallet_path}`);
-initOracleClient({ configDir: wallet_path });
+const wallet_path = process.env.TNS_ADMIN || '/opt/render/project/src/wallet';
+process.env.TNS_ADMIN = wallet_path;
+
+// oracledb.initOracleClient({ configDir: wallet_path });
 
 async function insertUser(user) {
-  const connection = await getConnection({
+  const connection = await oracledb.getConnection({
     user: process.env.ORACLE_USER,
     password: process.env.ORACLE_PASSWORD,
     connectString: process.env.ORACLE_CONNECT_STRING
   });
-
+  console.log('connection successful');
   await connection.execute(
     `INSERT INTO users (user_id, first_name, last_name, email, role)
      VALUES (:id, :fname, :lname, :email, :role)`,
@@ -27,8 +31,18 @@ async function insertUser(user) {
     },
     { autoCommit: true }
   );
-
+ 
   await connection.close();
 }
-
 export default insertUser;
+
+
+// console.log(`Wallet path is ${wallet_path}`);
+// console.log(`Oracle client is using ${oracledb.thin ? 'Thin' : 'Thick'} mode.`);
+// console.log("Using wallet path from TNS_ADMIN:", wallet_path);
+// console.log('Wallet exists:', fs.existsSync(`${wallet_path}/cwallet.sso`));
+// console.log('tnsnames exists:', fs.existsSync(`${wallet_path}/tnsnames.ora`));
+// console.log('sqlnet exists:', fs.existsSync(`${wallet_path}/sqlnet.ora`));
+// // const tnsFile = path.join(wallet_path, 'tnsnames.ora');
+// // console.log("📄 tnsnames.ora contents:");
+// // console.log(fs.readFileSync(tnsFile, 'utf8'));

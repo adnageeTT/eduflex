@@ -7,7 +7,7 @@ dotenv.config();
 // Enable Thin mode (Render doesn’t support thick mode)
 console.log(`Is it thin?:  ${oracledb.thin}`);
 
-const wallet_path = process.env.TNS_ADMIN || '/opt/render/project/src/wallet';
+const wallet_path = process.env.TNS_ADMIN || '/opt/render/project/src/wallet/wallet';
 process.env.TNS_ADMIN = wallet_path;
 
 // oracledb.initOracleClient({ configDir: wallet_path });

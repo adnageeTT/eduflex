@@ -16,7 +16,7 @@ async function insertUser(user) {
   const connection = await oracledb.getConnection({
     user: process.env.ORACLE_USER,
     password: process.env.ORACLE_PASSWORD,
-    connectString: process.env.ORACLE_CONNECT_STRING
+    connectString: 'eduflexmain_high.adb.oraclecloud.com'
   });
   console.log('connection successful');
   await connection.execute(
